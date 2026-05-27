@@ -1,7 +1,15 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist/estu-red/browser",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist/estu-red/browser"
+      }
+    }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
