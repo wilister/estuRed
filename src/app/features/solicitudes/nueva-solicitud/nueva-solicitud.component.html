@@ -1,0 +1,30 @@
+<div class="nueva-solicitud">
+  <h1>Nueva Solicitud de Ayuda</h1>
+
+  <div class="form-group">
+    <label>Asignatura</label>
+    <input type="text" [(ngModel)]="asignatura" placeholder="Ej: Matemáticas, Inglés..." />
+  </div>
+
+  <div class="form-group">
+    <label>Nivel Educativo</label>
+    <select [(ngModel)]="nivel">
+      <option value="">Selecciona el nivel</option>
+      <option *ngFor="let n of niveles" [value]="n">{{ n }}</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Describe tu duda</label>
+    <textarea [(ngModel)]="descripcion" rows="5" placeholder="Explica en qué necesitas ayuda..."></textarea>
+  </div>
+
+  <div class="error" *ngIf="error">{{ error }}</div>
+
+  <div class="botones">
+    <button class="btn-secondary" (click)="router.navigate(['/home'])">Cancelar</button>
+    <button class="btn-primary" (click)="publicar()" [disabled]="cargando">
+      {{ cargando ? 'Publicando...' : 'Publicar Solicitud' }}
+    </button>
+  </div>
+</div>

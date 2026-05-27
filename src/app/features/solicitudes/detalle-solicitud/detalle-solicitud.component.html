@@ -1,0 +1,41 @@
+<div class="detalle">
+  <div class="detalle-nav">
+    <button class="btn-volver" (click)="router.navigate(['/home'])">← Volver</button>
+    <button class="btn-eliminar" *ngIf="esAutor" (click)="eliminarSolicitud()">🗑️ Eliminar</button>
+  </div>
+
+  <div *ngIf="cargando"><div class="spinner"></div></div>
+
+  <div *ngIf="!cargando && solicitud">
+    <div class="solicitud-header">
+      <h1>{{ solicitud!.asignatura }}</h1>
+      <span class="nivel">{{ solicitud!.nivel }}</span>
+    </div>
+    <p class="descripcion">{{ solicitud!.descripcion }}</p>
+    <p class="autor">👤 {{ solicitud!.alias_usuario }} · {{ solicitud!.created_at | date:'dd/MM/yyyy' }}</p>
+
+    <div class="respuestas-seccion">
+      <h2>Respuestas ({{ respuestas.length }})</h2>
+
+      <div class="sin-respuestas" *ngIf="respuestas.length === 0">
+        Nadie ha respondido todavía. ¡Sé el primero!
+      </div>
+
+      <div class="respuesta-card" *ngFor="let r of respuestas">
+        <div class="respuesta-header">
+          <span class="alias">👤 {{ r.alias_usuario }}</span>
+          <span class="fecha">{{ r.created_at | date:'dd/MM/yyyy' }}</span>
+        </div>
+        <p>{{ r.contenido }}</p>
+      </div>
+
+      <div class="nueva-respuesta">
+        <h3>Tu Respuesta</h3>
+        <textarea [(ngModel)]="nuevaRespuesta" rows="4" placeholder="Escribe tu respuesta..."></textarea>
+        <button class="btn-primary" (click)="enviarRespuesta()" [disabled]="enviando">
+          {{ enviando ? 'Enviando...' : 'Enviar Respuesta' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

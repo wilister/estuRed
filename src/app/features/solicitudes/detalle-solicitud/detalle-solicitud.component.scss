@@ -1,0 +1,119 @@
+.detalle {
+  .btn-volver {
+    background: transparent;
+    border: 1px solid #555;
+    color: #aaaaaa;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 24px;
+    &:hover { border-color: #aaaaaa; }
+  }
+
+  .solicitud-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+
+    h1 { color: #ffffff; margin: 0; }
+
+    .nivel {
+      background: #0f0f1a;
+      color: #aaaaaa;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+  }
+
+  .descripcion {
+    color: #dddddd;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+
+  .autor {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 40px;
+  }
+
+  .respuestas-seccion {
+    h2 { color: #ffffff; margin-bottom: 20px; }
+
+    .sin-respuestas {
+      color: #aaaaaa;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .respuesta-card {
+      background: #1a1a2e;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid #333;
+
+      .respuesta-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+
+        .alias { color: #e94560; font-size: 0.9rem; }
+        .fecha { color: #666; font-size: 0.85rem; }
+      }
+
+      p { color: #dddddd; margin: 0; line-height: 1.5; }
+    }
+
+    .nueva-respuesta {
+      margin-top: 30px;
+
+      h3 { color: #ffffff; margin-bottom: 12px; }
+
+      textarea {
+        width: 100%;
+        padding: 12px;
+        background: #1a1a2e;
+        border: 1px solid #333;
+        border-radius: 8px;
+        color: white;
+        font-size: 1rem;
+        box-sizing: border-box;
+        resize: vertical;
+        margin-bottom: 12px;
+        &:focus { outline: none; border-color: #e94560; }
+      }
+
+      .btn-primary {
+        background: #e94560;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        &:hover { background: #c73652; }
+        &:disabled { opacity: 0.6; cursor: not-allowed; }
+      }
+    }
+  }
+  .detalle-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.btn-eliminar {
+  background: transparent;
+  border: 1px solid #e94560;
+  color: #e94560;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  &:hover { background: #e94560; color: white; }
+}
+}

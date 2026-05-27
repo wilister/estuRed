@@ -1,0 +1,92 @@
+import { Injectable } from '@angular/core';
+import { createClient, SupabaseClient, User } from '@supabase/supabase-js';
+import { environment } from '../../../environments/environment';
+import { Perfil, Solicitud, Respuesta } from '../models/modelos';
+
+@Injectable({ providedIn: 'root' })
+export class SupabaseService {
+  private supabase: SupabaseClient;
+
+ constructor() {
+  this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey, {
+    auth: {
+      persistSession: true,
+      storageKey: 'estuRed-auth',
+      storage: window.localStorage,
+      autoRefreshToken: true,
+      detectSessionInUrl: false,
+      flowType: 'implicit'
+    }
+  });
+}
+  getClient(): SupabaseClient {
+    return this.supabase;
+  }
+
+  // AUTH
+  async registrar(email: string, password: string) {
+    return this.supabase.auth.signUp({ email, password });
+  }
+
+  async login(email: string, password: string) {
+    return this.supabase.auth.signInWithPassword({ email, password });
+  }
+
+  async logout() {
+    return this.supabase.auth.signOut();
+  }
+
+  async getUser(): Promise<User | null> {
+    const { data } = await this.supabase.auth.getUser();
+    return data.user;
+  }
+
+  async getSession() {
+    return this.supabase.auth.getSession();
+  }
+  onAuthChange(callback: (user: any) => void) {
+  this.supabase.auth.onAuthStateChange((event, session) => {
+    callback(session?.user || null);
+  });
+}
+
+  // PERFILES
+  async crearPerfil(id: string, alias: string, nivel: string, centro: string) {
+    return this.supabase.from('perfiles').insert({ id, alias, nivel, centro });
+  }
+
+  async getPerfil(id: string) {
+    return this.supabase.from('perfiles').select('*').eq('id', id).single();
+  }
+
+  // SOLICITUDES
+  async crearSolicitud(usuario_id: string, alias_usuario: string, asignatura: string, descripcion: string, nivel: string) {
+    return this.supabase.from('solicitudes').insert({ usuario_id, alias_usuario, asignatura, descripcion, nivel });
+  }
+
+  async getSolicitudes() {
+    return this.supabase.from('solicitudes').select('*').order('created_at', { ascending: false });
+  }
+
+  // RESPUESTAS
+  async crearRespuesta(solicitud_id: string, usuario_id: string, alias_usuario: string, contenido: string) {
+    return this.supabase.from('respuestas').insert({ solicitud_id, usuario_id, alias_usuario, contenido });
+  }
+
+  async getRespuestas(solicitud_id: string) {
+    return this.supabase.from('respuestas').select('*').eq('solicitud_id', solicitud_id).order('created_at', { ascending: true });
+  }
+  async contarRespuestas(solicitud_id: string) {
+  return this.supabase
+    .from('respuestas')
+    .select('id', { count: 'exact', head: true })
+    .eq('solicitud_id', solicitud_id);
+}
+
+async eliminarSolicitud(id: string) {
+  return this.supabase.from('solicitudes').delete().eq('id', id);
+}
+async actualizarPerfil(id: string, alias: string, nivel: string, centro: string) {
+  return this.supabase.from('perfiles').update({ alias, nivel, centro }).eq('id', id);
+}
+}

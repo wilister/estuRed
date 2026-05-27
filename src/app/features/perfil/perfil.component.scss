@@ -1,0 +1,125 @@
+.perfil {
+  max-width: 500px;
+  margin: 0 auto;
+
+  h1 { color: #ffffff; margin-bottom: 30px; }
+
+  .perfil-card {
+    background: #1a1a2e;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    border: 1px solid #333;
+
+    .avatar {
+      width: 80px;
+      height: 80px;
+      background: #e94560;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: white;
+      font-weight: bold;
+      margin: 0 auto 16px auto;
+    }
+
+    h2 { color: #ffffff; margin-bottom: 30px; }
+
+    .info-grid {
+      display: grid;
+      gap: 16px;
+      text-align: left;
+      margin-bottom: 24px;
+
+      .info-item {
+        background: #0f0f1a;
+        padding: 14px 18px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .label { color: #aaaaaa; font-size: 0.9rem; }
+        .valor { color: #ffffff; font-weight: bold; }
+      }
+    }
+
+    .btn-editar {
+      background: transparent;
+      border: 1px solid #e94560;
+      color: #e94560;
+      padding: 10px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      &:hover { background: #e94560; color: white; }
+    }
+
+    .form-edicion {
+      text-align: left;
+
+      h2 { color: #ffffff; margin-bottom: 24px; text-align: center; }
+
+      .form-group {
+        margin-bottom: 16px;
+
+        label {
+          display: block;
+          color: #aaaaaa;
+          margin-bottom: 6px;
+          font-size: 0.9rem;
+        }
+
+        input, select {
+          width: 100%;
+          padding: 12px;
+          background: #0f0f1a;
+          border: 1px solid #333;
+          border-radius: 8px;
+          color: white;
+          font-size: 1rem;
+          box-sizing: border-box;
+          &:focus { outline: none; border-color: #e94560; }
+        }
+      }
+
+      .botones {
+        display: flex;
+        gap: 12px;
+        margin-top: 24px;
+
+        .btn-cancelar {
+          flex: 1;
+          padding: 12px;
+          background: transparent;
+          border: 1px solid #555;
+          color: #aaaaaa;
+          border-radius: 8px;
+          cursor: pointer;
+          &:hover { border-color: #aaaaaa; }
+        }
+
+        .btn-guardar {
+          flex: 1;
+          padding: 12px;
+          background: #e94560;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          &:hover { background: #c73652; }
+          &:disabled { opacity: 0.6; cursor: not-allowed; }
+        }
+      }
+    }
+
+    .mensaje {
+      margin-top: 16px;
+      color: #e94560;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+  }
+}
