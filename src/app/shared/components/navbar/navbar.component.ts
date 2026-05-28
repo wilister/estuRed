@@ -13,7 +13,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   notificaciones = 0;
   mostrarNotificaciones = false;
   listaNotificaciones: any[] = [];
-  private canal: any = null;
+  private intervalo: any = null;
 
   constructor(private supabase: SupabaseService, private router: Router) {}
 
@@ -23,7 +23,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
       const { data: perfil } = await this.supabase.getPerfil(this.usuario.id);
       this.alias = perfil?.alias || '';
       await this.cargarNotificaciones();
-      this.suscribirseANotificaciones();
+      this.iniciarPolling();
     }
 
     this.supabase.onAuthChange(async (user: any) => {
@@ -32,12 +32,27 @@ export class NavbarComponent implements OnInit, OnDestroy {
         const { data: perfil } = await this.supabase.getPerfil(user.id);
         this.alias = perfil?.alias || '';
         await this.cargarNotificaciones();
-        this.suscribirseANotificaciones();
+        this.iniciarPolling();
       } else {
         this.alias = '';
         this.notificaciones = 0;
+        this.pararPolling();
       }
     });
+  }
+
+  iniciarPolling() {
+    this.pararPolling();
+    this.intervalo = setInterval(async () => {
+      await this.cargarNotificaciones();
+    }, 10000);
+  }
+
+  pararPolling() {
+    if (this.intervalo) {
+      clearInterval(this.intervalo);
+      this.intervalo = null;
+    }
   }
 
   async cargarNotificaciones() {
@@ -45,16 +60,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     const { data } = await this.supabase.getNotificaciones(this.usuario.id);
     this.listaNotificaciones = data || [];
     this.notificaciones = this.listaNotificaciones.length;
-  }
-
-  suscribirseANotificaciones() {
-    if (!this.usuario) return;
-    this.canal = this.supabase.suscribirseANotificaciones(
-      this.usuario.id,
-      async () => {
-        await this.cargarNotificaciones();
-      }
-    );
   }
 
   async toggleNotificaciones() {
@@ -71,7 +76,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   async cerrarSesion() {
-    if (this.canal) this.canal.unsubscribe();
+    this.pararPolling();
     await this.supabase.logout();
     this.usuario = null;
     this.alias = '';
@@ -80,6 +85,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.canal) this.canal.unsubscribe();
+    this.pararPolling();
   }
 }
