@@ -16,6 +16,8 @@ export class DetalleSolicitudComponent implements OnInit {
   enviando = false;
   usuarioId = '';
   esAutor = false;
+  valoraciones: { [respuestaId: string]: number } = {};
+  votados: { [respuestaId: string]: boolean } = {};
 
   constructor(
     private route: ActivatedRoute,
@@ -32,9 +34,33 @@ export class DetalleSolicitudComponent implements OnInit {
     this.solicitud = solicitudes?.find((s: Solicitud) => s.id === id) || null;
     this.esAutor = this.solicitud?.usuario_id === this.usuarioId;
 
+    await this.cargarRespuestas();
+    this.cargando = false;
+  }
+
+  async cargarRespuestas() {
+    const id = this.route.snapshot.paramMap.get('id')!;
     const { data: respuestas } = await this.supabase.getRespuestas(id);
     this.respuestas = respuestas || [];
-    this.cargando = false;
+
+    for (const r of this.respuestas) {
+      const { data: vals } = await this.supabase.getValoraciones(r.id);
+      this.valoraciones[r.id] = vals?.length || 0;
+      this.votados[r.id] = vals?.some((v: any) => v.usuario_id === this.usuarioId) || false;
+    }
+  }
+
+  async toggleVoto(respuestaId: string) {
+    if (!this.usuarioId) return;
+    if (this.votados[respuestaId]) {
+      await this.supabase.quitarValoracion(respuestaId, this.usuarioId);
+      this.valoraciones[respuestaId]--;
+      this.votados[respuestaId] = false;
+    } else {
+      await this.supabase.valorar(respuestaId, this.usuarioId);
+      this.valoraciones[respuestaId]++;
+      this.votados[respuestaId] = true;
+    }
   }
 
   async enviarRespuesta() {
@@ -43,9 +69,10 @@ export class DetalleSolicitudComponent implements OnInit {
     const user = await this.supabase.getUser();
     if (!user) return;
     const { data: perfil } = await this.supabase.getPerfil(user.id);
-    await this.supabase.crearRespuesta(this.solicitud!.id, user.id, perfil.alias, this.nuevaRespuesta);
-    const { data: respuestas } = await this.supabase.getRespuestas(this.solicitud!.id);
-    this.respuestas = respuestas || [];
+    await this.supabase.crearRespuesta(
+      this.solicitud!.id, user.id, perfil.alias, this.nuevaRespuesta
+    );
+    await this.cargarRespuestas();
     this.nuevaRespuesta = '';
     this.enviando = false;
   }

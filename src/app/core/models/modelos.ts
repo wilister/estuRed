@@ -23,4 +23,13 @@ export interface Respuesta {
   alias_usuario: string;
   contenido: string;
   created_at?: string;
+  votos?: number;
+  votado?: boolean;
+}
+
+export interface Valoracion {
+  id: string;
+  respuesta_id: string;
+  usuario_id: string;
+  created_at?: string;
 }

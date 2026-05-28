@@ -1,4 +1,11 @@
 .detalle {
+  .detalle-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+
   .btn-volver {
     background: transparent;
     border: 1px solid #555;
@@ -6,8 +13,17 @@
     padding: 8px 16px;
     border-radius: 6px;
     cursor: pointer;
-    margin-bottom: 24px;
     &:hover { border-color: #aaaaaa; }
+  }
+
+  .btn-eliminar {
+    background: transparent;
+    border: 1px solid #e94560;
+    color: #e94560;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    &:hover { background: #e94560; color: white; }
   }
 
   .solicitud-header {
@@ -65,7 +81,34 @@
         .fecha { color: #666; font-size: 0.85rem; }
       }
 
-      p { color: #dddddd; margin: 0; line-height: 1.5; }
+      p { color: #dddddd; margin: 0 0 12px 0; line-height: 1.5; }
+
+      .respuesta-footer {
+        display: flex;
+        justify-content: flex-end;
+
+        .btn-voto {
+          background: transparent;
+          border: 1px solid #333;
+          color: #aaaaaa;
+          padding: 6px 14px;
+          border-radius: 20px;
+          cursor: pointer;
+          font-size: 0.85rem;
+          transition: all 0.2s;
+
+          &:hover {
+            border-color: #e94560;
+            color: #e94560;
+          }
+
+          &.votado {
+            background: rgba(233, 69, 96, 0.15);
+            border-color: #e94560;
+            color: #e94560;
+          }
+        }
+      }
     }
 
     .nueva-respuesta {
@@ -100,20 +143,4 @@
       }
     }
   }
-  .detalle-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.btn-eliminar {
-  background: transparent;
-  border: 1px solid #e94560;
-  color: #e94560;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  &:hover { background: #e94560; color: white; }
-}
 }

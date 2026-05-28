@@ -89,4 +89,37 @@ async eliminarSolicitud(id: string) {
 async actualizarPerfil(id: string, alias: string, nivel: string, centro: string) {
   return this.supabase.from('perfiles').update({ alias, nivel, centro }).eq('id', id);
 }
+async getValoraciones(respuesta_id: string) {
+  return this.supabase
+    .from('valoraciones')
+    .select('*')
+    .eq('respuesta_id', respuesta_id);
+}
+
+async valorar(respuesta_id: string, usuario_id: string) {
+  return this.supabase
+    .from('valoraciones')
+    .insert({ respuesta_id, usuario_id });
+}
+
+async quitarValoracion(respuesta_id: string, usuario_id: string) {
+  return this.supabase
+    .from('valoraciones')
+    .delete()
+    .eq('respuesta_id', respuesta_id)
+    .eq('usuario_id', usuario_id);
+}
+
+async getValoracionesDeRespuestas(solicitud_id: string) {
+  return this.supabase
+    .from('valoraciones')
+    .select('*')
+    .in('respuesta_id',
+      (await this.supabase
+        .from('respuestas')
+        .select('id')
+        .eq('solicitud_id', solicitud_id)
+      ).data?.map((r: any) => r.id) || []
+    );
+}
 }
