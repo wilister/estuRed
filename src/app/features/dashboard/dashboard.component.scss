@@ -65,3 +65,26 @@
     }
   }
 }
+
+@media (max-width: 768px) {
+  .dashboard {
+    h1 { font-size: 1.4rem; }
+
+    .stats-row {
+      grid-template-columns: 1fr;
+
+      .stat-card {
+        padding: 16px;
+        .stat-numero { font-size: 2rem; }
+      }
+    }
+
+    .graficas-grid {
+      grid-template-columns: 1fr;
+
+      .grafica-card.full-width {
+        grid-column: 1;
+      }
+    }
+  }
+}

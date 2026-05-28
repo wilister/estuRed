@@ -48,3 +48,30 @@
     }
   }
 }
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 15px;
+
+    .navbar-brand {
+      font-size: 1.1rem;
+    }
+
+    .navbar-links {
+      gap: 8px;
+
+      a {
+        font-size: 0.75rem;
+      }
+
+      .alias-link {
+        display: none;
+      }
+
+      button {
+        padding: 6px 10px;
+        font-size: 0.75rem;
+      }
+    }
+  }
+}
