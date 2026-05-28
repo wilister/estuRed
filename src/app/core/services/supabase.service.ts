@@ -140,4 +140,11 @@ export class SupabaseService {
 async getTodosPerfiles() {
   return this.supabase.from('perfiles').select('*');
 }
+async getMisSolicitudes(usuario_id: string) {
+  return this.supabase
+    .from('solicitudes')
+    .select('*')
+    .eq('usuario_id', usuario_id)
+    .order('created_at', { ascending: false });
+}
 }

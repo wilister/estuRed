@@ -1,5 +1,4 @@
 <div class="home">
-
   <div class="bienvenida" *ngIf="alias">
     👋 Bienvenido, <strong>{{ alias }}</strong>
   </div>
@@ -26,13 +25,25 @@
       type="text"
       [(ngModel)]="busqueda"
       (ngModelChange)="filtrar()"
-      placeholder="🔍 Buscar por asignatura..."
+      placeholder="🔍 Buscar por asignatura o descripción..."
       class="input-busqueda"
     />
     <select [(ngModel)]="nivelFiltro" (ngModelChange)="filtrar()" class="select-nivel">
       <option value="">Todos los niveles</option>
       <option *ngFor="let n of niveles" [value]="n">{{ n }}</option>
     </select>
+  </div>
+
+  <div class="ordenar">
+    <button [class.activo]="ordenActivo === 'recientes'" (click)="ordenar('recientes')">
+      🕒 Más recientes
+    </button>
+    <button [class.activo]="ordenActivo === 'mas-respondidas'" (click)="ordenar('mas-respondidas')">
+      💬 Más respondidas
+    </button>
+    <button [class.activo]="ordenActivo === 'sin-respuesta'" (click)="ordenar('sin-respuesta')">
+      🆘 Sin respuesta
+    </button>
   </div>
 
   <div *ngIf="cargando"><div class="spinner"></div></div>
@@ -60,5 +71,4 @@
       </div>
     </div>
   </div>
-
 </div>

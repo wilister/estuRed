@@ -12,6 +12,7 @@ import { DetalleSolicitudComponent } from './features/solicitudes/detalle-solici
 import { PerfilComponent } from './features/perfil/perfil.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
+import { LandingComponent } from './features/landing/landing.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { DashboardComponent } from './features/dashboard/dashboard.component';
     DetalleSolicitudComponent,
     PerfilComponent,
     NotFoundComponent,
-    DashboardComponent
+    DashboardComponent,
+    LandingComponent
   ],
   imports: [
     BrowserModule,

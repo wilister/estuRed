@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { SupabaseService } from '../../core/services/supabase.service';
-import { Perfil } from '../../core/models/modelos';
+import { Perfil, Solicitud } from '../../core/models/modelos';
 
 @Component({
   selector: 'app-perfil',
@@ -9,6 +10,8 @@ import { Perfil } from '../../core/models/modelos';
 })
 export class PerfilComponent implements OnInit {
   perfil: Perfil | null = null;
+  misSolicitudes: Solicitud[] = [];
+  contadores: { [id: string]: number } = {};
   cargando = true;
   editando = false;
   guardando = false;
@@ -20,13 +23,19 @@ export class PerfilComponent implements OnInit {
 
   niveles = ['ESO', 'Bachillerato', 'Grado Medio', 'Grado Superior', 'Universidad'];
 
-  constructor(private supabase: SupabaseService) {}
+  constructor(private supabase: SupabaseService, private router: Router) {}
 
   async ngOnInit() {
     const user = await this.supabase.getUser();
     if (user) {
       const { data } = await this.supabase.getPerfil(user.id);
       this.perfil = data;
+      const { data: solicitudes } = await this.supabase.getMisSolicitudes(user.id);
+      this.misSolicitudes = solicitudes || [];
+      for (const s of this.misSolicitudes) {
+        const { count } = await this.supabase.contarRespuestas(s.id);
+        this.contadores[s.id] = count || 0;
+      }
     }
     this.cargando = false;
   }
@@ -63,5 +72,9 @@ export class PerfilComponent implements OnInit {
       this.mensaje = '✅ Perfil actualizado correctamente';
     }
     this.guardando = false;
+  }
+
+  verDetalle(id: string) {
+    this.router.navigate(['/solicitud', id]);
   }
 }

@@ -15,6 +15,7 @@ export class HomeComponent implements OnInit {
   cargando = true;
   busqueda = '';
   nivelFiltro = '';
+  ordenActivo = 'recientes';
   alias = '';
   totalSolicitudes = 0;
   totalRespuestas = 0;
@@ -46,11 +47,31 @@ export class HomeComponent implements OnInit {
   }
 
   filtrar() {
-    this.solicitudesFiltradas = this.solicitudes.filter(s => {
-      const coincideBusqueda = s.asignatura.toLowerCase().includes(this.busqueda.toLowerCase());
+    let resultado = this.solicitudes.filter(s => {
+      const coincideBusqueda = s.asignatura.toLowerCase().includes(this.busqueda.toLowerCase()) ||
+        s.descripcion.toLowerCase().includes(this.busqueda.toLowerCase());
       const coincideNivel = this.nivelFiltro ? s.nivel === this.nivelFiltro : true;
       return coincideBusqueda && coincideNivel;
     });
+
+    if (this.ordenActivo === 'recientes') {
+      resultado = resultado.sort((a, b) =>
+        new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime()
+      );
+    } else if (this.ordenActivo === 'mas-respondidas') {
+      resultado = resultado.sort((a, b) =>
+        (this.contadores[b.id] || 0) - (this.contadores[a.id] || 0)
+      );
+    } else if (this.ordenActivo === 'sin-respuesta') {
+      resultado = resultado.filter(s => (this.contadores[s.id] || 0) === 0);
+    }
+
+    this.solicitudesFiltradas = resultado;
+  }
+
+  ordenar(tipo: string) {
+    this.ordenActivo = tipo;
+    this.filtrar();
   }
 
   verDetalle(id: string) {

@@ -1,5 +1,5 @@
 .perfil {
-  max-width: 500px;
+  max-width: 600px;
   margin: 0 auto;
 
   h1 { color: #ffffff; margin-bottom: 30px; }
@@ -10,6 +10,7 @@
     padding: 40px;
     text-align: center;
     border: 1px solid #333;
+    margin-bottom: 30px;
 
     .avatar {
       width: 80px;
@@ -120,6 +121,88 @@
       color: #e94560;
       font-size: 0.95rem;
       text-align: center;
+    }
+  }
+
+  .mis-solicitudes {
+    h2 { color: #ffffff; margin-bottom: 20px; }
+
+    .vacio {
+      color: #aaaaaa;
+      text-align: center;
+      padding: 30px;
+      background: #1a1a2e;
+      border-radius: 8px;
+      border: 1px solid #333;
+    }
+
+    .solicitud-card {
+      background: #1a1a2e;
+      border-radius: 10px;
+      padding: 20px;
+      cursor: pointer;
+      border: 1px solid #333;
+      margin-bottom: 12px;
+      transition: border-color 0.2s, transform 0.2s;
+
+      &:hover {
+        border-color: #e94560;
+        transform: translateY(-2px);
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+
+        .asignatura {
+          color: #e94560;
+          font-weight: bold;
+          font-size: 1rem;
+        }
+
+        .nivel {
+          background: #0f0f1a;
+          color: #aaaaaa;
+          padding: 4px 10px;
+          border-radius: 20px;
+          font-size: 0.8rem;
+        }
+      }
+
+      .descripcion {
+        color: #dddddd;
+        margin: 0 0 12px 0;
+        line-height: 1.5;
+        font-size: 0.95rem;
+      }
+
+      .card-footer {
+        display: flex;
+        justify-content: space-between;
+
+        .fecha { color: #666; font-size: 0.85rem; }
+        .respuestas { color: #e94560; font-size: 0.85rem; }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .perfil {
+    .perfil-card {
+      padding: 20px;
+    }
+
+    .mis-solicitudes {
+      .solicitud-card {
+        .card-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+      }
     }
   }
 }

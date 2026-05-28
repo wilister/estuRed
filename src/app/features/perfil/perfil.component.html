@@ -3,58 +3,80 @@
 
   <div *ngIf="cargando"><div class="spinner"></div></div>
 
-  <div class="perfil-card" *ngIf="!cargando && perfil">
+  <div *ngIf="!cargando && perfil">
+    <div class="perfil-card">
 
-    <div *ngIf="!editando">
-      <div class="avatar">{{ perfil!.alias.charAt(0).toUpperCase() }}</div>
-      <h2>{{ perfil!.alias }}</h2>
+      <div *ngIf="!editando">
+        <div class="avatar">{{ perfil!.alias.charAt(0).toUpperCase() }}</div>
+        <h2>{{ perfil!.alias }}</h2>
 
-      <div class="info-grid">
-        <div class="info-item">
-          <span class="label">Nivel Educativo</span>
-          <span class="valor">{{ perfil!.nivel }}</span>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="label">Nivel Educativo</span>
+            <span class="valor">{{ perfil!.nivel }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Centro Educativo</span>
+            <span class="valor">{{ perfil!.centro }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Miembro desde</span>
+            <span class="valor">{{ perfil!.created_at | date:'dd/MM/yyyy' }}</span>
+          </div>
         </div>
-        <div class="info-item">
-          <span class="label">Centro Educativo</span>
-          <span class="valor">{{ perfil!.centro }}</span>
+
+        <button class="btn-editar" (click)="activarEdicion()">✏️ Editar Perfil</button>
+      </div>
+
+      <div *ngIf="editando" class="form-edicion">
+        <h2>Editar Perfil</h2>
+
+        <div class="form-group">
+          <label>Alias</label>
+          <input type="text" [(ngModel)]="aliasEdit" placeholder="Tu alias" />
         </div>
-        <div class="info-item">
-          <span class="label">Miembro desde</span>
-          <span class="valor">{{ perfil!.created_at | date:'dd/MM/yyyy' }}</span>
+
+        <div class="form-group">
+          <label>Nivel Educativo</label>
+          <select [(ngModel)]="nivelEdit">
+            <option *ngFor="let n of niveles" [value]="n">{{ n }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Centro Educativo</label>
+          <input type="text" [(ngModel)]="centroEdit" placeholder="Tu centro" />
+        </div>
+
+        <div class="botones">
+          <button class="btn-cancelar" (click)="cancelarEdicion()">Cancelar</button>
+          <button class="btn-guardar" (click)="guardarCambios()" [disabled]="guardando">
+            {{ guardando ? 'Guardando...' : 'Guardar Cambios' }}
+          </button>
         </div>
       </div>
 
-      <button class="btn-editar" (click)="activarEdicion()">✏️ Editar Perfil</button>
+      <div class="mensaje" *ngIf="mensaje">{{ mensaje }}</div>
     </div>
 
-    <div *ngIf="editando" class="form-edicion">
-      <h2>Editar Perfil</h2>
+    <div class="mis-solicitudes">
+      <h2>Mis Solicitudes ({{ misSolicitudes.length }})</h2>
 
-      <div class="form-group">
-        <label>Alias</label>
-        <input type="text" [(ngModel)]="aliasEdit" placeholder="Tu alias" />
+      <div class="vacio" *ngIf="misSolicitudes.length === 0">
+        No has publicado ninguna solicitud todavía.
       </div>
 
-      <div class="form-group">
-        <label>Nivel Educativo</label>
-        <select [(ngModel)]="nivelEdit">
-          <option *ngFor="let n of niveles" [value]="n">{{ n }}</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Centro Educativo</label>
-        <input type="text" [(ngModel)]="centroEdit" placeholder="Tu centro" />
-      </div>
-
-      <div class="botones">
-        <button class="btn-cancelar" (click)="cancelarEdicion()">Cancelar</button>
-        <button class="btn-guardar" (click)="guardarCambios()" [disabled]="guardando">
-          {{ guardando ? 'Guardando...' : 'Guardar Cambios' }}
-        </button>
+      <div class="solicitud-card" *ngFor="let s of misSolicitudes" (click)="verDetalle(s.id)">
+        <div class="card-header">
+          <span class="asignatura">{{ s.asignatura }}</span>
+          <span class="nivel">{{ s.nivel }}</span>
+        </div>
+        <p class="descripcion">{{ s.descripcion }}</p>
+        <div class="card-footer">
+          <span class="fecha">{{ s.created_at | date:'dd/MM/yyyy' }}</span>
+          <span class="respuestas">💬 {{ contadores[s.id] || 0 }} respuestas</span>
+        </div>
       </div>
     </div>
-
-    <div class="mensaje" *ngIf="mensaje">{{ mensaje }}</div>
   </div>
 </div>
