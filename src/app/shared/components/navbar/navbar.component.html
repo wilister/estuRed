@@ -3,6 +3,28 @@
   <div class="navbar-links" *ngIf="usuario">
     <a routerLink="/home">Inicio</a>
     <a routerLink="/nueva-solicitud">Nueva Solicitud</a>
+
+    <div class="notif-wrapper">
+      <button class="btn-notif" (click)="toggleNotificaciones()">
+        🔔
+        <span class="badge" *ngIf="notificaciones > 0">{{ notificaciones }}</span>
+      </button>
+
+      <div class="notif-dropdown" *ngIf="mostrarNotificaciones">
+        <div class="notif-header">Notificaciones</div>
+        <div class="notif-vacia" *ngIf="listaNotificaciones.length === 0">
+          No tienes notificaciones
+        </div>
+        <div
+          class="notif-item"
+          *ngFor="let n of listaNotificaciones"
+          (click)="irASolicitud(n.solicitud_id)">
+          {{ n.mensaje }}
+          <span class="notif-fecha">{{ n.created_at | date:'dd/MM HH:mm' }}</span>
+        </div>
+      </div>
+    </div>
+
     <a routerLink="/perfil" class="alias-link">👤 {{ alias }}</a>
     <button (click)="cerrarSesion()">Cerrar Sesión</button>
   </div>

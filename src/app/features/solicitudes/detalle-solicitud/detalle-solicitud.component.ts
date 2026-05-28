@@ -64,18 +64,30 @@ export class DetalleSolicitudComponent implements OnInit {
   }
 
   async enviarRespuesta() {
-    if (!this.nuevaRespuesta.trim()) return;
-    this.enviando = true;
-    const user = await this.supabase.getUser();
-    if (!user) return;
-    const { data: perfil } = await this.supabase.getPerfil(user.id);
-    await this.supabase.crearRespuesta(
-      this.solicitud!.id, user.id, perfil.alias, this.nuevaRespuesta
+  if (!this.nuevaRespuesta.trim()) return;
+  this.enviando = true;
+  const user = await this.supabase.getUser();
+  if (!user) return;
+  const { data: perfil } = await this.supabase.getPerfil(user.id);
+
+  const { data: respuesta } = await this.supabase.crearRespuesta(
+    this.solicitud!.id, user.id, perfil.alias, this.nuevaRespuesta
+  );
+
+  // Crear notificación para el autor de la solicitud
+  if (this.solicitud!.usuario_id !== user.id) {
+    await this.supabase.crearNotificacion(
+      this.solicitud!.usuario_id,
+      this.solicitud!.id,
+      '',
+      `${perfil.alias} ha respondido a tu solicitud de ${this.solicitud!.asignatura}`
     );
-    await this.cargarRespuestas();
-    this.nuevaRespuesta = '';
-    this.enviando = false;
   }
+
+  await this.cargarRespuestas();
+  this.nuevaRespuesta = '';
+  this.enviando = false;
+}
 
   async eliminarSolicitud() {
     if (!confirm('¿Seguro que quieres eliminar esta solicitud?')) return;

@@ -122,4 +122,41 @@ async getValoracionesDeRespuestas(solicitud_id: string) {
       ).data?.map((r: any) => r.id) || []
     );
 }
+async getNotificaciones(usuario_id: string) {
+  return this.supabase
+    .from('notificaciones')
+    .select('*')
+    .eq('usuario_id', usuario_id)
+    .eq('leida', false)
+    .order('created_at', { ascending: false });
+}
+
+async crearNotificacion(usuario_id: string, solicitud_id: string, respuesta_id: string, mensaje: string) {
+  return this.supabase
+    .from('notificaciones')
+    .insert({ usuario_id, solicitud_id, respuesta_id, mensaje });
+}
+
+async marcarNotificacionesLeidas(usuario_id: string) {
+  return this.supabase
+    .from('notificaciones')
+    .update({ leida: true })
+    .eq('usuario_id', usuario_id);
+}
+
+suscribirseANotificaciones(usuario_id: string, callback: (payload: any) => void) {
+  return this.supabase
+    .channel('notificaciones-' + usuario_id)
+    .on(
+      'postgres_changes',
+      {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'notificaciones',
+        filter: `usuario_id=eq.${usuario_id}`
+      },
+      callback
+    )
+    .subscribe();
+}
 }
