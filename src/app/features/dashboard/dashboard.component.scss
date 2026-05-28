@@ -1,0 +1,67 @@
+.dashboard {
+  h1 {
+    color: #ffffff;
+    margin-bottom: 30px;
+    font-size: 1.8rem;
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 30px;
+
+    .stat-card {
+      background: #1a1a2e;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      transition: border-color 0.2s;
+
+      &:hover { border-color: #e94560; }
+
+      .stat-icon { font-size: 2rem; }
+
+      .stat-numero {
+        color: #e94560;
+        font-size: 2.5rem;
+        font-weight: bold;
+        line-height: 1;
+      }
+
+      .stat-label {
+        color: #aaaaaa;
+        font-size: 0.9rem;
+        text-align: center;
+      }
+    }
+  }
+
+  .graficas-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+
+    .grafica-card {
+      background: #1a1a2e;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 24px;
+
+      &.full-width {
+        grid-column: 1 / -1;
+      }
+
+      h2 {
+        color: #ffffff;
+        font-size: 1rem;
+        margin-bottom: 20px;
+        font-weight: 600;
+      }
+    }
+  }
+}

@@ -131,4 +131,13 @@ export class SupabaseService {
         ).data?.map((r: any) => r.id) || []
       );
   }
+  async getSolicitudesConRespuestas() {
+  return this.supabase
+    .from('solicitudes')
+    .select('*, respuestas(count)')
+    .order('created_at', { ascending: false });
+}
+async getTodosPerfiles() {
+  return this.supabase.from('perfiles').select('*');
+}
 }

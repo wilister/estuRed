@@ -11,6 +11,7 @@ import { NuevaSolicitudComponent } from './features/solicitudes/nueva-solicitud/
 import { DetalleSolicitudComponent } from './features/solicitudes/detalle-solicitud/detalle-solicitud.component';
 import { PerfilComponent } from './features/perfil/perfil.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
+import { DashboardComponent } from './features/dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { NotFoundComponent } from './features/not-found/not-found.component';
     NuevaSolicitudComponent,
     DetalleSolicitudComponent,
     PerfilComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
