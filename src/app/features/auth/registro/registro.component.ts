@@ -26,27 +26,28 @@ export class RegistroComponent {
     this.error = 'Rellena todos los campos';
     return;
   }
+  if (this.password.length < 6) {
+    this.error = 'La contraseña debe tener mínimo 6 caracteres';
+    return;
+  }
+  if (this.alias.length < 3) {
+    this.error = 'El alias debe tener mínimo 3 caracteres';
+    return;
+  }
+
+  this.alias = this.supabase.sanitizar(this.alias);
+  this.centro = this.supabase.sanitizar(this.centro);
+
   this.cargando = true;
-
   const { data, error } = await this.supabase.registrar(this.email, this.password);
-
   if (error) {
     this.error = 'Error al registrarse: ' + error.message;
     this.cargando = false;
     return;
   }
-
   if (data.user) {
-    const { error: perfilError } = await this.supabase.crearPerfil(
-      data.user.id, this.alias, this.nivel, this.centro
-    );
-    if (perfilError) {
-      this.error = 'Error al crear perfil: ' + perfilError.message;
-      this.cargando = false;
-      return;
-    }
+    await this.supabase.crearPerfil(data.user.id, this.alias, this.nivel, this.centro);
   }
-
   this.cargando = false;
   this.router.navigate(['/home']);
 }

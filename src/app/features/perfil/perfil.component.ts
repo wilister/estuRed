@@ -54,25 +54,35 @@ export class PerfilComponent implements OnInit {
   }
 
   async guardarCambios() {
-    if (!this.aliasEdit || !this.nivelEdit || !this.centroEdit) {
-      this.mensaje = 'Rellena todos los campos';
-      return;
-    }
-    this.guardando = true;
-    const user = await this.supabase.getUser();
-    if (!user) return;
-    const { error } = await this.supabase.actualizarPerfil(user.id, this.aliasEdit, this.nivelEdit, this.centroEdit);
-    if (error) {
-      this.mensaje = 'Error al guardar los cambios';
-    } else {
-      this.perfil!.alias = this.aliasEdit;
-      this.perfil!.nivel = this.nivelEdit;
-      this.perfil!.centro = this.centroEdit;
-      this.editando = false;
-      this.mensaje = '✅ Perfil actualizado correctamente';
-    }
-    this.guardando = false;
+  if (!this.aliasEdit || !this.nivelEdit || !this.centroEdit) {
+    this.mensaje = 'Rellena todos los campos';
+    return;
   }
+  if (this.aliasEdit.length < 3) {
+    this.mensaje = 'El alias debe tener mínimo 3 caracteres';
+    return;
+  }
+
+  this.aliasEdit = this.supabase.sanitizar(this.aliasEdit);
+  this.centroEdit = this.supabase.sanitizar(this.centroEdit);
+
+  this.guardando = true;
+  const user = await this.supabase.getUser();
+  if (!user) return;
+  const { error } = await this.supabase.actualizarPerfil(
+    user.id, this.aliasEdit, this.nivelEdit, this.centroEdit
+  );
+  if (error) {
+    this.mensaje = 'Error al guardar los cambios';
+  } else {
+    this.perfil!.alias = this.aliasEdit;
+    this.perfil!.nivel = this.nivelEdit;
+    this.perfil!.centro = this.centroEdit;
+    this.editando = false;
+    this.mensaje = '✅ Perfil actualizado correctamente';
+  }
+  this.guardando = false;
+}
 
   verDetalle(id: string) {
     this.router.navigate(['/solicitud', id]);

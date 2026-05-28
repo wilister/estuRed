@@ -64,18 +64,22 @@ export class DetalleSolicitudComponent implements OnInit {
   }
 
   async enviarRespuesta() {
-    if (!this.nuevaRespuesta.trim()) return;
-    this.enviando = true;
-    const user = await this.supabase.getUser();
-    if (!user) return;
-    const { data: perfil } = await this.supabase.getPerfil(user.id);
-    await this.supabase.crearRespuesta(
-      this.solicitud!.id, user.id, perfil.alias, this.nuevaRespuesta
-    );
-    await this.cargarRespuestas();
-    this.nuevaRespuesta = '';
-    this.enviando = false;
-  }
+  if (!this.nuevaRespuesta.trim()) return;
+  if (this.nuevaRespuesta.trim().length < 5) return;
+
+  this.nuevaRespuesta = this.supabase.sanitizar(this.nuevaRespuesta);
+
+  this.enviando = true;
+  const user = await this.supabase.getUser();
+  if (!user) return;
+  const { data: perfil } = await this.supabase.getPerfil(user.id);
+  await this.supabase.crearRespuesta(
+    this.solicitud!.id, user.id, perfil.alias, this.nuevaRespuesta
+  );
+  await this.cargarRespuestas();
+  this.nuevaRespuesta = '';
+  this.enviando = false;
+}
 
   async eliminarSolicitud() {
     if (!confirm('¿Seguro que quieres eliminar esta solicitud?')) return;

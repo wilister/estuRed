@@ -147,4 +147,13 @@ async getMisSolicitudes(usuario_id: string) {
     .eq('usuario_id', usuario_id)
     .order('created_at', { ascending: false });
 }
+sanitizar(texto: string): string {
+  return texto
+    .trim()
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
+}
 }

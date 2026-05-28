@@ -26,28 +26,35 @@ export class NuevaSolicitudComponent implements OnInit {
     this.error = 'Rellena todos los campos';
     return;
   }
+  if (this.asignatura.length < 2) {
+    this.error = 'La asignatura debe tener mínimo 2 caracteres';
+    return;
+  }
+  if (this.descripcion.length < 10) {
+    this.error = 'La descripción debe tener mínimo 10 caracteres';
+    return;
+  }
+
+  this.asignatura = this.supabase.sanitizar(this.asignatura);
+  this.descripcion = this.supabase.sanitizar(this.descripcion);
+
   this.cargando = true;
   const user = await this.supabase.getUser();
   if (!user) { this.router.navigate(['/login']); return; }
-  
   const { data: perfil, error: perfilError } = await this.supabase.getPerfil(user.id);
-  
   if (perfilError || !perfil) {
     this.error = 'Error al obtener tu perfil. Vuelve a iniciar sesión.';
     this.cargando = false;
     return;
   }
-
   const { error } = await this.supabase.crearSolicitud(
     user.id, perfil.alias, this.asignatura, this.descripcion, this.nivel
   );
-
   if (error) {
     this.error = 'Error al publicar: ' + error.message;
     this.cargando = false;
     return;
   }
-
   this.cargando = false;
   this.router.navigate(['/home']);
 }
