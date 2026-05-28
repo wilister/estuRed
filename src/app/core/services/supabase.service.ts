@@ -9,17 +9,20 @@ export class SupabaseService {
   private canales: { [key: string]: any } = {};
 
   constructor() {
-    this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey, {
-      auth: {
-        persistSession: true,
-        storageKey: 'estuRed-auth',
-        storage: window.localStorage,
-        autoRefreshToken: true,
-        detectSessionInUrl: false,
-        flowType: 'implicit'
+  this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey, {
+    auth: {
+      persistSession: true,
+      storageKey: 'estuRed-auth',
+      storage: window.localStorage,
+      autoRefreshToken: true,
+      detectSessionInUrl: false,
+      flowType: 'implicit',
+      lock: async (name: string, acquireTimeout: number, fn: () => Promise<any>) => {
+        return fn();
       }
-    });
-  }
+    }
+  });
+}
 
   getClient(): SupabaseClient {
     return this.supabase;
