@@ -6,23 +6,22 @@ import { Perfil, Solicitud, Respuesta } from '../models/modelos';
 @Injectable({ providedIn: 'root' })
 export class SupabaseService {
   private supabase: SupabaseClient;
-  private canales: { [key: string]: any } = {};
 
   constructor() {
-  this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey, {
-    auth: {
-      persistSession: true,
-      storageKey: 'estuRed-auth',
-      storage: window.localStorage,
-      autoRefreshToken: true,
-      detectSessionInUrl: false,
-      flowType: 'implicit',
-      lock: async (name: string, acquireTimeout: number, fn: () => Promise<any>) => {
-        return fn();
+    this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey, {
+      auth: {
+        persistSession: true,
+        storageKey: 'estuRed-auth',
+        storage: window.localStorage,
+        autoRefreshToken: true,
+        detectSessionInUrl: false,
+        flowType: 'implicit',
+        lock: async (name: string, acquireTimeout: number, fn: () => Promise<any>) => {
+          return fn();
+        }
       }
-    }
-  });
-}
+    });
+  }
 
   getClient(): SupabaseClient {
     return this.supabase;
@@ -131,52 +130,5 @@ export class SupabaseService {
           .eq('solicitud_id', solicitud_id)
         ).data?.map((r: any) => r.id) || []
       );
-  }
-
-  // NOTIFICACIONES
-  async getNotificaciones(usuario_id: string) {
-    return this.supabase
-      .from('notificaciones')
-      .select('*')
-      .eq('usuario_id', usuario_id)
-      .eq('leida', false)
-      .order('created_at', { ascending: false });
-  }
-
-  async crearNotificacion(usuario_id: string, solicitud_id: string, respuesta_id: string, mensaje: string) {
-    return this.supabase
-      .from('notificaciones')
-      .insert({ usuario_id, solicitud_id, respuesta_id, mensaje });
-  }
-
-  async marcarNotificacionesLeidas(usuario_id: string) {
-    return this.supabase
-      .from('notificaciones')
-      .update({ leida: true })
-      .eq('usuario_id', usuario_id);
-  }
-
-  suscribirseANotificaciones(usuario_id: string, callback: (payload: any) => void) {
-    const canalKey = 'notificaciones-' + usuario_id;
-
-    if (this.canales[canalKey]) {
-      this.supabase.removeChannel(this.canales[canalKey]);
-    }
-
-    this.canales[canalKey] = this.supabase
-      .channel(canalKey)
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'notificaciones',
-          filter: `usuario_id=eq.${usuario_id}`
-        },
-        callback
-      )
-      .subscribe();
-
-    return this.canales[canalKey];
   }
 }
