@@ -6,19 +6,21 @@ import { Perfil, Solicitud, Respuesta } from '../models/modelos';
 @Injectable({ providedIn: 'root' })
 export class SupabaseService {
   private supabase: SupabaseClient;
+  private canales: { [key: string]: any } = {};
 
- constructor() {
-  this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey, {
-    auth: {
-      persistSession: true,
-      storageKey: 'estuRed-auth',
-      storage: window.localStorage,
-      autoRefreshToken: true,
-      detectSessionInUrl: false,
-      flowType: 'implicit'
-    }
-  });
-}
+  constructor() {
+    this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey, {
+      auth: {
+        persistSession: true,
+        storageKey: 'estuRed-auth',
+        storage: window.localStorage,
+        autoRefreshToken: true,
+        detectSessionInUrl: false,
+        flowType: 'implicit'
+      }
+    });
+  }
+
   getClient(): SupabaseClient {
     return this.supabase;
   }
@@ -44,11 +46,12 @@ export class SupabaseService {
   async getSession() {
     return this.supabase.auth.getSession();
   }
+
   onAuthChange(callback: (user: any) => void) {
-  this.supabase.auth.onAuthStateChange((event, session) => {
-    callback(session?.user || null);
-  });
-}
+    this.supabase.auth.onAuthStateChange((event, session) => {
+      callback(session?.user || null);
+    });
+  }
 
   // PERFILES
   async crearPerfil(id: string, alias: string, nivel: string, centro: string) {
@@ -57,6 +60,10 @@ export class SupabaseService {
 
   async getPerfil(id: string) {
     return this.supabase.from('perfiles').select('*').eq('id', id).single();
+  }
+
+  async actualizarPerfil(id: string, alias: string, nivel: string, centro: string) {
+    return this.supabase.from('perfiles').update({ alias, nivel, centro }).eq('id', id);
   }
 
   // SOLICITUDES
@@ -68,6 +75,10 @@ export class SupabaseService {
     return this.supabase.from('solicitudes').select('*').order('created_at', { ascending: false });
   }
 
+  async eliminarSolicitud(id: string) {
+    return this.supabase.from('solicitudes').delete().eq('id', id);
+  }
+
   // RESPUESTAS
   async crearRespuesta(solicitud_id: string, usuario_id: string, alias_usuario: string, contenido: string) {
     return this.supabase.from('respuestas').insert({ solicitud_id, usuario_id, alias_usuario, contenido });
@@ -76,87 +87,93 @@ export class SupabaseService {
   async getRespuestas(solicitud_id: string) {
     return this.supabase.from('respuestas').select('*').eq('solicitud_id', solicitud_id).order('created_at', { ascending: true });
   }
+
   async contarRespuestas(solicitud_id: string) {
-  return this.supabase
-    .from('respuestas')
-    .select('id', { count: 'exact', head: true })
-    .eq('solicitud_id', solicitud_id);
-}
+    return this.supabase
+      .from('respuestas')
+      .select('id', { count: 'exact', head: true })
+      .eq('solicitud_id', solicitud_id);
+  }
 
-async eliminarSolicitud(id: string) {
-  return this.supabase.from('solicitudes').delete().eq('id', id);
-}
-async actualizarPerfil(id: string, alias: string, nivel: string, centro: string) {
-  return this.supabase.from('perfiles').update({ alias, nivel, centro }).eq('id', id);
-}
-async getValoraciones(respuesta_id: string) {
-  return this.supabase
-    .from('valoraciones')
-    .select('*')
-    .eq('respuesta_id', respuesta_id);
-}
+  // VALORACIONES
+  async getValoraciones(respuesta_id: string) {
+    return this.supabase
+      .from('valoraciones')
+      .select('*')
+      .eq('respuesta_id', respuesta_id);
+  }
 
-async valorar(respuesta_id: string, usuario_id: string) {
-  return this.supabase
-    .from('valoraciones')
-    .insert({ respuesta_id, usuario_id });
-}
+  async valorar(respuesta_id: string, usuario_id: string) {
+    return this.supabase
+      .from('valoraciones')
+      .insert({ respuesta_id, usuario_id });
+  }
 
-async quitarValoracion(respuesta_id: string, usuario_id: string) {
-  return this.supabase
-    .from('valoraciones')
-    .delete()
-    .eq('respuesta_id', respuesta_id)
-    .eq('usuario_id', usuario_id);
-}
+  async quitarValoracion(respuesta_id: string, usuario_id: string) {
+    return this.supabase
+      .from('valoraciones')
+      .delete()
+      .eq('respuesta_id', respuesta_id)
+      .eq('usuario_id', usuario_id);
+  }
 
-async getValoracionesDeRespuestas(solicitud_id: string) {
-  return this.supabase
-    .from('valoraciones')
-    .select('*')
-    .in('respuesta_id',
-      (await this.supabase
-        .from('respuestas')
-        .select('id')
-        .eq('solicitud_id', solicitud_id)
-      ).data?.map((r: any) => r.id) || []
-    );
-}
-async getNotificaciones(usuario_id: string) {
-  return this.supabase
-    .from('notificaciones')
-    .select('*')
-    .eq('usuario_id', usuario_id)
-    .eq('leida', false)
-    .order('created_at', { ascending: false });
-}
+  async getValoracionesDeRespuestas(solicitud_id: string) {
+    return this.supabase
+      .from('valoraciones')
+      .select('*')
+      .in('respuesta_id',
+        (await this.supabase
+          .from('respuestas')
+          .select('id')
+          .eq('solicitud_id', solicitud_id)
+        ).data?.map((r: any) => r.id) || []
+      );
+  }
 
-async crearNotificacion(usuario_id: string, solicitud_id: string, respuesta_id: string, mensaje: string) {
-  return this.supabase
-    .from('notificaciones')
-    .insert({ usuario_id, solicitud_id, respuesta_id, mensaje });
-}
+  // NOTIFICACIONES
+  async getNotificaciones(usuario_id: string) {
+    return this.supabase
+      .from('notificaciones')
+      .select('*')
+      .eq('usuario_id', usuario_id)
+      .eq('leida', false)
+      .order('created_at', { ascending: false });
+  }
 
-async marcarNotificacionesLeidas(usuario_id: string) {
-  return this.supabase
-    .from('notificaciones')
-    .update({ leida: true })
-    .eq('usuario_id', usuario_id);
-}
+  async crearNotificacion(usuario_id: string, solicitud_id: string, respuesta_id: string, mensaje: string) {
+    return this.supabase
+      .from('notificaciones')
+      .insert({ usuario_id, solicitud_id, respuesta_id, mensaje });
+  }
 
-suscribirseANotificaciones(usuario_id: string, callback: (payload: any) => void) {
-  return this.supabase
-    .channel('notificaciones-' + usuario_id)
-    .on(
-      'postgres_changes',
-      {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'notificaciones',
-        filter: `usuario_id=eq.${usuario_id}`
-      },
-      callback
-    )
-    .subscribe();
-}
+  async marcarNotificacionesLeidas(usuario_id: string) {
+    return this.supabase
+      .from('notificaciones')
+      .update({ leida: true })
+      .eq('usuario_id', usuario_id);
+  }
+
+  suscribirseANotificaciones(usuario_id: string, callback: (payload: any) => void) {
+    const canalKey = 'notificaciones-' + usuario_id;
+
+    if (this.canales[canalKey]) {
+      this.supabase.removeChannel(this.canales[canalKey]);
+    }
+
+    this.canales[canalKey] = this.supabase
+      .channel(canalKey)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'notificaciones',
+          filter: `usuario_id=eq.${usuario_id}`
+        },
+        callback
+      )
+      .subscribe();
+
+    return this.canales[canalKey];
+  }
 }
