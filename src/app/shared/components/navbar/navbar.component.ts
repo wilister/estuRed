@@ -10,6 +10,7 @@ import { SupabaseService } from '../../../core/services/supabase.service';
 export class NavbarComponent implements OnInit {
   usuario: any = null;
   alias = '';
+  menuAbierto = false;
 
   constructor(private supabase: SupabaseService, private router: Router) {}
 
@@ -30,10 +31,24 @@ export class NavbarComponent implements OnInit {
     });
   }
 
+  toggleMenu() {
+    this.menuAbierto = !this.menuAbierto;
+  }
+
+  cerrarMenu() {
+    this.menuAbierto = false;
+  }
+
   async cerrarSesion() {
     await this.supabase.logout();
     this.usuario = null;
     this.alias = '';
+    this.menuAbierto = false;
     this.router.navigate(['/login']);
+  }
+
+  navegarA(ruta: string) {
+    this.menuAbierto = false;
+    this.router.navigate([ruta]);
   }
 }
