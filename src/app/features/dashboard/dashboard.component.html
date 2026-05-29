@@ -1,22 +1,19 @@
 <div class="dashboard">
-  <h1>📊 Dashboard</h1>
+  <h1>Estadísticas</h1>
 
   <div *ngIf="cargando"><div class="spinner"></div></div>
 
   <div *ngIf="!cargando">
     <div class="stats-row">
       <div class="stat-card">
-        <span class="stat-icon">📋</span>
         <span class="stat-numero">{{ totalSolicitudes }}</span>
         <span class="stat-label">Solicitudes totales</span>
       </div>
       <div class="stat-card">
-        <span class="stat-icon">💬</span>
         <span class="stat-numero">{{ totalRespuestas }}</span>
         <span class="stat-label">Respuestas dadas</span>
       </div>
       <div class="stat-card">
-        <span class="stat-icon">👥</span>
         <span class="stat-numero">{{ totalUsuarios }}</span>
         <span class="stat-label">Usuarios registrados</span>
       </div>

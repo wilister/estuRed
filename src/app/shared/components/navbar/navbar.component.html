@@ -1,26 +1,26 @@
 <nav class="navbar">
-  <div class="navbar-brand" (click)="navegarA('/home')">🎓 EstuRed</div>
+  <div class="navbar-brand" (click)="navegarA('/home')">EstuRed</div>
 
   <div class="navbar-links" *ngIf="usuario">
     <a (click)="navegarA('/home')">Inicio</a>
     <a (click)="navegarA('/nueva-solicitud')">Nueva Solicitud</a>
-    <a (click)="navegarA('/dashboard')">📊 Dashboard</a>
-    <a (click)="navegarA('/perfil')" class="alias-link">👤 {{ alias }}</a>
+    <a (click)="navegarA('/dashboard')">Dashboard</a>
+    <a (click)="navegarA('/perfil')" class="alias-link">{{ alias }}</a>
     <button (click)="cerrarSesion()">Cerrar Sesión</button>
   </div>
 
-  <button class="hamburguesa" *ngIf="usuario" (click)="toggleMenu()">
+  <button class="hamburguesa" *ngIf="usuario" (click)="toggleMenu()" aria-label="Abrir menú">
     <span></span>
     <span></span>
     <span></span>
   </button>
 
   <div class="menu-movil" *ngIf="menuAbierto && usuario">
-    <a (click)="navegarA('/home')">🏠 Inicio</a>
-    <a (click)="navegarA('/nueva-solicitud')">➕ Nueva Solicitud</a>
-    <a (click)="navegarA('/dashboard')">📊 Dashboard</a>
-    <a (click)="navegarA('/perfil')">👤 Mi Perfil ({{ alias }})</a>
-    <a class="cerrar-sesion" (click)="cerrarSesion()">🚪 Cerrar Sesión</a>
+    <a (click)="navegarA('/home')">Inicio</a>
+    <a (click)="navegarA('/nueva-solicitud')">Nueva Solicitud</a>
+    <a (click)="navegarA('/dashboard')">Dashboard</a>
+    <a (click)="navegarA('/perfil')">Mi Perfil ({{ alias }})</a>
+    <a class="cerrar-sesion" (click)="cerrarSesion()">Cerrar Sesión</a>
   </div>
 </nav>
 

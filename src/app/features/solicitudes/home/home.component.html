@@ -1,6 +1,6 @@
 <div class="home">
   <div class="bienvenida" *ngIf="alias">
-    👋 Bienvenido, <strong>{{ alias }}</strong>
+    Bienvenido, <strong>{{ alias }}</strong>
   </div>
 
   <div class="estadisticas" *ngIf="!cargando">
@@ -25,7 +25,7 @@
       type="text"
       [(ngModel)]="busqueda"
       (ngModelChange)="filtrar()"
-      placeholder="🔍 Buscar por asignatura o descripción..."
+      placeholder="Buscar por asignatura o descripción..."
       class="input-busqueda"
     />
     <select [(ngModel)]="nivelFiltro" (ngModelChange)="filtrar()" class="select-nivel">
@@ -36,13 +36,13 @@
 
   <div class="ordenar">
     <button [class.activo]="ordenActivo === 'recientes'" (click)="ordenar('recientes')">
-      🕒 Más recientes
+      Más recientes
     </button>
     <button [class.activo]="ordenActivo === 'mas-respondidas'" (click)="ordenar('mas-respondidas')">
-      💬 Más respondidas
+      Más respondidas
     </button>
     <button [class.activo]="ordenActivo === 'sin-respuesta'" (click)="ordenar('sin-respuesta')">
-      🆘 Sin respuesta
+      Sin respuesta
     </button>
   </div>
 
@@ -57,15 +57,15 @@
       <div class="card-header">
         <span class="asignatura">{{ s.asignatura }}</span>
         <div class="card-header-right">
-          <span class="badge-sin-respuesta" *ngIf="contadores[s.id] === 0">🆘 Necesita ayuda</span>
+          <span class="badge-sin-respuesta" *ngIf="contadores[s.id] === 0">Sin respuesta</span>
           <span class="nivel" [ngClass]="getNivelClass(s.nivel)">{{ s.nivel }}</span>
         </div>
       </div>
       <p class="descripcion">{{ s.descripcion }}</p>
       <div class="card-footer">
-        <span class="alias">👤 {{ s.alias_usuario }}</span>
+        <span class="alias">{{ s.alias_usuario }}</span>
         <div class="card-footer-right">
-          <span class="respuestas">💬 {{ contadores[s.id] || 0 }} respuestas</span>
+          <span class="respuestas">{{ contadores[s.id] || 0 }} respuestas</span>
           <span class="fecha">{{ s.created_at | date:'dd/MM/yyyy' }}</span>
         </div>
       </div>
