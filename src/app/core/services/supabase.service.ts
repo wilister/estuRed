@@ -8,6 +8,9 @@ export class SupabaseService {
   private supabase: SupabaseClient;
 
   constructor() {
+    // Configuración del cliente de Supabase con opciones de autenticación
+    // La función lock personalizada resuelve la incompatibilidad con el
+    // Navigator LockManager del navegador en producción con HTTPS
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey, {
       auth: {
         persistSession: true,
@@ -27,7 +30,8 @@ export class SupabaseService {
     return this.supabase;
   }
 
-  // AUTH
+  // ==================== AUTH ====================
+
   async registrar(email: string, password: string) {
     return this.supabase.auth.signUp({ email, password });
   }
@@ -55,7 +59,8 @@ export class SupabaseService {
     });
   }
 
-  // PERFILES
+  // ==================== PERFILES ====================
+
   async crearPerfil(id: string, alias: string, nivel: string, centro: string) {
     return this.supabase.from('perfiles').insert({ id, alias, nivel, centro });
   }
@@ -68,8 +73,19 @@ export class SupabaseService {
     return this.supabase.from('perfiles').update({ alias, nivel, centro }).eq('id', id);
   }
 
-  // SOLICITUDES
-  async crearSolicitud(usuario_id: string, alias_usuario: string, asignatura: string, descripcion: string, nivel: string) {
+  async getTodosPerfiles() {
+    return this.supabase.from('perfiles').select('*');
+  }
+
+  // ==================== SOLICITUDES ====================
+
+  async crearSolicitud(
+    usuario_id: string,
+    alias_usuario: string,
+    asignatura: string,
+    descripcion: string,
+    nivel: string
+  ) {
     return this.supabase.from('solicitudes').insert({ usuario_id, alias_usuario, asignatura, descripcion, nivel });
   }
 
@@ -77,17 +93,42 @@ export class SupabaseService {
     return this.supabase.from('solicitudes').select('*').order('created_at', { ascending: false });
   }
 
+  async getSolicitudesConRespuestas() {
+    return this.supabase
+      .from('solicitudes')
+      .select('*, respuestas(count)')
+      .order('created_at', { ascending: false });
+  }
+
+  async getMisSolicitudes(usuario_id: string) {
+    return this.supabase
+      .from('solicitudes')
+      .select('*')
+      .eq('usuario_id', usuario_id)
+      .order('created_at', { ascending: false });
+  }
+
   async eliminarSolicitud(id: string) {
     return this.supabase.from('solicitudes').delete().eq('id', id);
   }
 
-  // RESPUESTAS
-  async crearRespuesta(solicitud_id: string, usuario_id: string, alias_usuario: string, contenido: string) {
+  // ==================== RESPUESTAS ====================
+
+  async crearRespuesta(
+    solicitud_id: string,
+    usuario_id: string,
+    alias_usuario: string,
+    contenido: string
+  ) {
     return this.supabase.from('respuestas').insert({ solicitud_id, usuario_id, alias_usuario, contenido });
   }
 
   async getRespuestas(solicitud_id: string) {
-    return this.supabase.from('respuestas').select('*').eq('solicitud_id', solicitud_id).order('created_at', { ascending: true });
+    return this.supabase
+      .from('respuestas')
+      .select('*')
+      .eq('solicitud_id', solicitud_id)
+      .order('created_at', { ascending: true });
   }
 
   async contarRespuestas(solicitud_id: string) {
@@ -97,7 +138,8 @@ export class SupabaseService {
       .eq('solicitud_id', solicitud_id);
   }
 
-  // VALORACIONES
+  // ==================== VALORACIONES ====================
+
   async getValoraciones(respuesta_id: string) {
     return this.supabase
       .from('valoraciones')
@@ -131,29 +173,17 @@ export class SupabaseService {
         ).data?.map((r: any) => r.id) || []
       );
   }
-  async getSolicitudesConRespuestas() {
-  return this.supabase
-    .from('solicitudes')
-    .select('*, respuestas(count)')
-    .order('created_at', { ascending: false });
-}
-async getTodosPerfiles() {
-  return this.supabase.from('perfiles').select('*');
-}
-async getMisSolicitudes(usuario_id: string) {
-  return this.supabase
-    .from('solicitudes')
-    .select('*')
-    .eq('usuario_id', usuario_id)
-    .order('created_at', { ascending: false });
-}
-sanitizar(texto: string): string {
-  return texto
-    .trim()
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;')
-    .replace(/\//g, '&#x2F;');
-}
+
+  // ==================== UTILIDADES ====================
+
+  // Sanitiza los inputs del usuario para prevenir ataques XSS
+  sanitizar(texto: string): string {
+    return texto
+      .trim()
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#x27;')
+      .replace(/\//g, '&#x2F;');
+  }
 }
