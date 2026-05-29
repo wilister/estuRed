@@ -33,6 +33,7 @@ export class DetalleSolicitudComponent implements OnInit {
     const user = await this.supabase.getUser();
     this.usuarioId = user?.id || '';
 
+    // Carga la solicitud y determina si el usuario actual es el autor
     const { data: solicitudes } = await this.supabase.getSolicitudes();
     this.solicitud = solicitudes?.find((s: Solicitud) => s.id === id) || null;
     this.esAutor = this.solicitud?.usuario_id === this.usuarioId;
@@ -41,6 +42,7 @@ export class DetalleSolicitudComponent implements OnInit {
     this.cargando = false;
   }
 
+  // Carga las respuestas y el estado de valoración de cada una
   async cargarRespuestas() {
     const id = this.route.snapshot.paramMap.get('id')!;
     const { data: respuestas } = await this.supabase.getRespuestas(id);
@@ -53,9 +55,9 @@ export class DetalleSolicitudComponent implements OnInit {
     }
   }
 
+  // Alterna el like de una respuesta: lo añade si no existe, lo quita si ya existe
   async toggleVoto(respuestaId: string) {
     if (!this.usuarioId) return;
-
     if (!this.rateLimit.puedeEjecutar('valoracion')) return;
 
     if (this.votados[respuestaId]) {
@@ -72,16 +74,19 @@ export class DetalleSolicitudComponent implements OnInit {
   async enviarRespuesta() {
     this.errorRespuesta = '';
 
+    // Comprueba el rate limiting antes de procesar la respuesta
     if (!this.rateLimit.puedeEjecutar('respuesta')) {
       this.errorRespuesta = `Demasiadas respuestas. Espera ${this.rateLimit.tiempoRestante('respuesta')} segundos.`;
       return;
     }
 
+    // Validación de longitud mínima
     if (!this.nuevaRespuesta.trim() || this.nuevaRespuesta.trim().length < 5) {
       this.errorRespuesta = 'La respuesta debe tener mínimo 5 caracteres';
       return;
     }
 
+    // Sanitización del contenido para prevenir XSS
     this.nuevaRespuesta = this.supabase.sanitizar(this.nuevaRespuesta);
 
     this.enviando = true;

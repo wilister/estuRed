@@ -25,12 +25,14 @@ export class HomeComponent implements OnInit {
   constructor(private supabase: SupabaseService, private router: Router) {}
 
   async ngOnInit() {
+    // Obtiene el alias del usuario para el mensaje de bienvenida
     const user = await this.supabase.getUser();
     if (user) {
       const { data: perfil } = await this.supabase.getPerfil(user.id);
       this.alias = perfil?.alias || '';
     }
 
+    // Carga todas las solicitudes y cuenta las respuestas de cada una
     const { data } = await this.supabase.getSolicitudes();
     this.solicitudes = data || [];
 
@@ -39,6 +41,7 @@ export class HomeComponent implements OnInit {
       this.contadores[s.id] = count || 0;
     }
 
+    // Calcula las estadísticas globales de la plataforma
     this.totalSolicitudes = this.solicitudes.length;
     this.totalRespuestas = Object.values(this.contadores).reduce((a, b) => a + b, 0);
 
@@ -46,9 +49,11 @@ export class HomeComponent implements OnInit {
     this.cargando = false;
   }
 
+  // Filtra y ordena las solicitudes según los criterios activos
   filtrar() {
     let resultado = this.solicitudes.filter(s => {
-      const coincideBusqueda = s.asignatura.toLowerCase().includes(this.busqueda.toLowerCase()) ||
+      const coincideBusqueda =
+        s.asignatura.toLowerCase().includes(this.busqueda.toLowerCase()) ||
         s.descripcion.toLowerCase().includes(this.busqueda.toLowerCase());
       const coincideNivel = this.nivelFiltro ? s.nivel === this.nivelFiltro : true;
       return coincideBusqueda && coincideNivel;
@@ -82,6 +87,7 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/nueva-solicitud']);
   }
 
+  // Genera la clase CSS correspondiente al nivel educativo para el sistema de colores
   getNivelClass(nivel: string): string {
     return 'nivel-' + nivel.replace(/ /g, '-');
   }

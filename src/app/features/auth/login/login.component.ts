@@ -23,6 +23,7 @@ export class LoginComponent {
   async login() {
     this.error = '';
 
+    // Comprueba el rate limiting antes de intentar el login
     if (!this.rateLimit.puedeEjecutar('login')) {
       this.error = `Demasiados intentos. Espera ${this.rateLimit.tiempoRestante('login')} segundos.`;
       return;
@@ -31,6 +32,7 @@ export class LoginComponent {
     this.cargando = true;
     const { error } = await this.supabase.login(this.email, this.password);
     this.cargando = false;
+
     if (error) {
       this.error = 'Email o contraseña incorrectos';
     } else {

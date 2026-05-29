@@ -28,11 +28,13 @@ export class RegistroComponent {
   async registrar() {
     this.error = '';
 
+    // Comprueba el rate limiting antes de procesar el registro
     if (!this.rateLimit.puedeEjecutar('registro')) {
       this.error = `Demasiados intentos. Espera ${this.rateLimit.tiempoRestante('registro')} segundos.`;
       return;
     }
 
+    // Validaciones de campos obligatorios y longitud mínima
     if (!this.email || !this.password || !this.alias || !this.nivel || !this.centro) {
       this.error = 'Rellena todos los campos';
       return;
@@ -46,19 +48,24 @@ export class RegistroComponent {
       return;
     }
 
+    // Sanitización de inputs para prevenir XSS antes de guardar en la base de datos
     this.alias = this.supabase.sanitizar(this.alias);
     this.centro = this.supabase.sanitizar(this.centro);
 
     this.cargando = true;
     const { data, error } = await this.supabase.registrar(this.email, this.password);
+
     if (error) {
       this.error = 'Error al registrarse: ' + error.message;
       this.cargando = false;
       return;
     }
+
+    // Si el registro es exitoso, crea el perfil del usuario en la base de datos
     if (data.user) {
       await this.supabase.crearPerfil(data.user.id, this.alias, this.nivel, this.centro);
     }
+
     this.cargando = false;
     this.router.navigate(['/home']);
   }

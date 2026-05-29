@@ -11,16 +11,19 @@ import { NotFoundComponent } from './features/not-found/not-found.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { authGuard } from './core/guards/auth.guard';
 
+// Definición de rutas de la aplicación.
+// Las rutas marcadas con canActivate: [authGuard] son privadas
+// y requieren que el usuario esté autenticado para acceder.
 const routes: Routes = [
-  { path: '', component: LandingComponent },
-  { path: 'login', component: LoginComponent },
-  { path: 'registro', component: RegistroComponent },
-  { path: 'home', component: HomeComponent, canActivate: [authGuard] },
-  { path: 'nueva-solicitud', component: NuevaSolicitudComponent, canActivate: [authGuard] },
-  { path: 'solicitud/:id', component: DetalleSolicitudComponent, canActivate: [authGuard] },
-  { path: 'perfil', component: PerfilComponent, canActivate: [authGuard] },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
-  { path: '**', component: NotFoundComponent }
+  { path: '',                component: LandingComponent },
+  { path: 'login',           component: LoginComponent },
+  { path: 'registro',        component: RegistroComponent },
+  { path: 'home',            component: HomeComponent,            canActivate: [authGuard] },
+  { path: 'nueva-solicitud', component: NuevaSolicitudComponent,  canActivate: [authGuard] },
+  { path: 'solicitud/:id',   component: DetalleSolicitudComponent, canActivate: [authGuard] },
+  { path: 'perfil',          component: PerfilComponent,          canActivate: [authGuard] },
+  { path: 'dashboard',       component: DashboardComponent,       canActivate: [authGuard] },
+  { path: '**',              component: NotFoundComponent }
 ];
 
 @NgModule({
