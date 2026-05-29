@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SupabaseService } from '../../../core/services/supabase.service';
+import { RateLimitService } from '../../../core/services/rate-limit.service';
 
 @Component({
   selector: 'app-nueva-solicitud',
@@ -16,46 +17,56 @@ export class NuevaSolicitudComponent implements OnInit {
 
   niveles = ['ESO', 'Bachillerato', 'Grado Medio', 'Grado Superior', 'Universidad'];
 
-  constructor(private supabase: SupabaseService, public router: Router) {}
+  constructor(
+    private supabase: SupabaseService,
+    private rateLimit: RateLimitService,
+    public router: Router
+  ) {}
 
   async ngOnInit() {}
 
   async publicar() {
-  this.error = '';
-  if (!this.asignatura || !this.descripcion || !this.nivel) {
-    this.error = 'Rellena todos los campos';
-    return;
-  }
-  if (this.asignatura.length < 2) {
-    this.error = 'La asignatura debe tener mínimo 2 caracteres';
-    return;
-  }
-  if (this.descripcion.length < 10) {
-    this.error = 'La descripción debe tener mínimo 10 caracteres';
-    return;
-  }
+    this.error = '';
 
-  this.asignatura = this.supabase.sanitizar(this.asignatura);
-  this.descripcion = this.supabase.sanitizar(this.descripcion);
+    if (!this.rateLimit.puedeEjecutar('solicitud')) {
+      this.error = `Demasiadas solicitudes. Espera ${this.rateLimit.tiempoRestante('solicitud')} segundos.`;
+      return;
+    }
 
-  this.cargando = true;
-  const user = await this.supabase.getUser();
-  if (!user) { this.router.navigate(['/login']); return; }
-  const { data: perfil, error: perfilError } = await this.supabase.getPerfil(user.id);
-  if (perfilError || !perfil) {
-    this.error = 'Error al obtener tu perfil. Vuelve a iniciar sesión.';
+    if (!this.asignatura || !this.descripcion || !this.nivel) {
+      this.error = 'Rellena todos los campos';
+      return;
+    }
+    if (this.asignatura.length < 2) {
+      this.error = 'La asignatura debe tener mínimo 2 caracteres';
+      return;
+    }
+    if (this.descripcion.length < 10) {
+      this.error = 'La descripción debe tener mínimo 10 caracteres';
+      return;
+    }
+
+    this.asignatura = this.supabase.sanitizar(this.asignatura);
+    this.descripcion = this.supabase.sanitizar(this.descripcion);
+
+    this.cargando = true;
+    const user = await this.supabase.getUser();
+    if (!user) { this.router.navigate(['/login']); return; }
+    const { data: perfil, error: perfilError } = await this.supabase.getPerfil(user.id);
+    if (perfilError || !perfil) {
+      this.error = 'Error al obtener tu perfil. Vuelve a iniciar sesión.';
+      this.cargando = false;
+      return;
+    }
+    const { error } = await this.supabase.crearSolicitud(
+      user.id, perfil.alias, this.asignatura, this.descripcion, this.nivel
+    );
+    if (error) {
+      this.error = 'Error al publicar: ' + error.message;
+      this.cargando = false;
+      return;
+    }
     this.cargando = false;
-    return;
+    this.router.navigate(['/home']);
   }
-  const { error } = await this.supabase.crearSolicitud(
-    user.id, perfil.alias, this.asignatura, this.descripcion, this.nivel
-  );
-  if (error) {
-    this.error = 'Error al publicar: ' + error.message;
-    this.cargando = false;
-    return;
-  }
-  this.cargando = false;
-  this.router.navigate(['/home']);
-}
 }

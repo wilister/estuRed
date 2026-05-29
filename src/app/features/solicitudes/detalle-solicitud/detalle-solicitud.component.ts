@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SupabaseService } from '../../../core/services/supabase.service';
+import { RateLimitService } from '../../../core/services/rate-limit.service';
 import { Solicitud, Respuesta } from '../../../core/models/modelos';
 
 @Component({
@@ -18,10 +19,12 @@ export class DetalleSolicitudComponent implements OnInit {
   esAutor = false;
   valoraciones: { [respuestaId: string]: number } = {};
   votados: { [respuestaId: string]: boolean } = {};
+  errorRespuesta = '';
 
   constructor(
     private route: ActivatedRoute,
     private supabase: SupabaseService,
+    private rateLimit: RateLimitService,
     public router: Router
   ) {}
 
@@ -52,6 +55,9 @@ export class DetalleSolicitudComponent implements OnInit {
 
   async toggleVoto(respuestaId: string) {
     if (!this.usuarioId) return;
+
+    if (!this.rateLimit.puedeEjecutar('valoracion')) return;
+
     if (this.votados[respuestaId]) {
       await this.supabase.quitarValoracion(respuestaId, this.usuarioId);
       this.valoraciones[respuestaId]--;
@@ -64,22 +70,31 @@ export class DetalleSolicitudComponent implements OnInit {
   }
 
   async enviarRespuesta() {
-  if (!this.nuevaRespuesta.trim()) return;
-  if (this.nuevaRespuesta.trim().length < 5) return;
+    this.errorRespuesta = '';
 
-  this.nuevaRespuesta = this.supabase.sanitizar(this.nuevaRespuesta);
+    if (!this.rateLimit.puedeEjecutar('respuesta')) {
+      this.errorRespuesta = `Demasiadas respuestas. Espera ${this.rateLimit.tiempoRestante('respuesta')} segundos.`;
+      return;
+    }
 
-  this.enviando = true;
-  const user = await this.supabase.getUser();
-  if (!user) return;
-  const { data: perfil } = await this.supabase.getPerfil(user.id);
-  await this.supabase.crearRespuesta(
-    this.solicitud!.id, user.id, perfil.alias, this.nuevaRespuesta
-  );
-  await this.cargarRespuestas();
-  this.nuevaRespuesta = '';
-  this.enviando = false;
-}
+    if (!this.nuevaRespuesta.trim() || this.nuevaRespuesta.trim().length < 5) {
+      this.errorRespuesta = 'La respuesta debe tener mínimo 5 caracteres';
+      return;
+    }
+
+    this.nuevaRespuesta = this.supabase.sanitizar(this.nuevaRespuesta);
+
+    this.enviando = true;
+    const user = await this.supabase.getUser();
+    if (!user) return;
+    const { data: perfil } = await this.supabase.getPerfil(user.id);
+    await this.supabase.crearRespuesta(
+      this.solicitud!.id, user.id, perfil.alias, this.nuevaRespuesta
+    );
+    await this.cargarRespuestas();
+    this.nuevaRespuesta = '';
+    this.enviando = false;
+  }
 
   async eliminarSolicitud() {
     if (!confirm('¿Seguro que quieres eliminar esta solicitud?')) return;

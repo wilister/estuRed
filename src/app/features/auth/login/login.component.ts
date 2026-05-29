@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { SupabaseService } from '../../../core/services/supabase.service';
+import { RateLimitService } from '../../../core/services/rate-limit.service';
 
 @Component({
   selector: 'app-login',
@@ -13,10 +14,20 @@ export class LoginComponent {
   error = '';
   cargando = false;
 
-  constructor(private supabase: SupabaseService, private router: Router) {}
+  constructor(
+    private supabase: SupabaseService,
+    private rateLimit: RateLimitService,
+    private router: Router
+  ) {}
 
   async login() {
     this.error = '';
+
+    if (!this.rateLimit.puedeEjecutar('login')) {
+      this.error = `Demasiados intentos. Espera ${this.rateLimit.tiempoRestante('login')} segundos.`;
+      return;
+    }
+
     this.cargando = true;
     const { error } = await this.supabase.login(this.email, this.password);
     this.cargando = false;

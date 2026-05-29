@@ -43,8 +43,9 @@
         <textarea
           [(ngModel)]="nuevaRespuesta"
           rows="4"
-          placeholder="Escribe tu respuesta...">
+          placeholder="Escribe tu respuesta (mínimo 5 caracteres)...">
         </textarea>
+        <div class="error-respuesta" *ngIf="errorRespuesta">{{ errorRespuesta }}</div>
         <button class="btn-primary" (click)="enviarRespuesta()" [disabled]="enviando">
           {{ enviando ? 'Enviando...' : 'Enviar Respuesta' }}
         </button>
