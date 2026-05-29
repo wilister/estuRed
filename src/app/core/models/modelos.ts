@@ -1,3 +1,6 @@
+// Interfaces TypeScript que definen los modelos de datos de la aplicación.
+// Garantizan el tipado estático en todos los componentes y servicios.
+
 export interface Perfil {
   id: string;
   alias: string;
@@ -31,15 +34,5 @@ export interface Valoracion {
   id: string;
   respuesta_id: string;
   usuario_id: string;
-  created_at?: string;
-}
-
-export interface Notificacion {
-  id: string;
-  usuario_id: string;
-  solicitud_id: string;
-  respuesta_id: string;
-  mensaje: string;
-  leida: boolean;
   created_at?: string;
 }
