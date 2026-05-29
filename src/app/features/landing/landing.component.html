@@ -1,68 +1,140 @@
 <div class="landing">
+
+  <nav class="landing-nav">
+    <div class="nav-brand">🎓 EstuRed</div>
+    <div class="nav-links">
+      <button class="btn-outline" (click)="router.navigate(['/login'])">Iniciar sesión</button>
+      <button class="btn-primary" (click)="router.navigate(['/registro'])">Registrarse gratis</button>
+    </div>
+  </nav>
+
   <div class="hero">
-    <div class="hero-content">
-      <h1>🎓 EstuRed</h1>
-      <p class="subtitulo">La plataforma colaborativa para estudiantes</p>
-      <p class="descripcion">
-        Conecta con otros estudiantes, resuelve tus dudas académicas,
-        comparte conocimiento y mejora tu rendimiento de forma anónima y segura.
-      </p>
-      <div class="hero-botones">
-        <button class="btn-primary" (click)="router.navigate(['/registro'])">
-          Crear cuenta gratis
-        </button>
-        <button class="btn-secondary" (click)="router.navigate(['/login'])">
-          Iniciar sesión
-        </button>
+    <div class="hero-badge">🚀 Plataforma académica colaborativa</div>
+    <h1>Aprende más.<br><span class="highlight">Juntos.</span></h1>
+    <p class="subtitulo">
+      Conecta con estudiantes de tu nivel, resuelve dudas académicas
+      y comparte conocimiento de forma anónima y segura.
+    </p>
+    <div class="hero-botones">
+      <button class="btn-primary-lg" (click)="router.navigate(['/registro'])">
+        Empezar gratis →
+      </button>
+      <button class="btn-ghost" (click)="router.navigate(['/login'])">
+        Ya tengo cuenta
+      </button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="stat-num">100%</span>
+        <span class="stat-label">Anónimo</span>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat">
+        <span class="stat-num">5</span>
+        <span class="stat-label">Niveles educativos</span>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat">
+        <span class="stat-num">∞</span>
+        <span class="stat-label">Conocimiento</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="como-funciona">
+    <div class="seccion-badge">¿Cómo funciona?</div>
+    <h2>En 3 simples pasos</h2>
+    <div class="pasos">
+      <div class="paso">
+        <div class="paso-numero">1</div>
+        <h3>Regístrate</h3>
+        <p>Crea tu cuenta con un alias anónimo. Nadie sabrá quién eres.</p>
+      </div>
+      <div class="paso-flecha">→</div>
+      <div class="paso">
+        <div class="paso-numero">2</div>
+        <h3>Publica tu duda</h3>
+        <p>Describe tu pregunta académica y selecciona tu nivel educativo.</p>
+      </div>
+      <div class="paso-flecha">→</div>
+      <div class="paso">
+        <div class="paso-numero">3</div>
+        <h3>Recibe ayuda</h3>
+        <p>Otros estudiantes responden y tú valoras las mejores respuestas.</p>
       </div>
     </div>
   </div>
 
   <div class="features">
-    <h2>¿Qué puedes hacer en EstuRed?</h2>
+    <div class="seccion-badge">Funcionalidades</div>
+    <h2>Todo lo que necesitas para estudiar mejor</h2>
     <div class="features-grid">
       <div class="feature-card">
-        <span class="feature-icon">🙋</span>
+        <div class="feature-icon-wrap">🙋</div>
         <h3>Pide ayuda</h3>
-        <p>Publica tus dudas académicas y recibe respuestas de otros estudiantes.</p>
+        <p>Publica tus dudas académicas y recibe respuestas de otros estudiantes en minutos.</p>
       </div>
       <div class="feature-card">
-        <span class="feature-icon">🤝</span>
+        <div class="feature-icon-wrap">🤝</div>
         <h3>Ayuda a otros</h3>
-        <p>Responde preguntas y gana reconocimiento con valoraciones 👍.</p>
+        <p>Responde preguntas y gana reconocimiento con valoraciones 👍 de la comunidad.</p>
       </div>
       <div class="feature-card">
-        <span class="feature-icon">🔒</span>
+        <div class="feature-icon-wrap">🔒</div>
         <h3>Anonimato total</h3>
-        <p>Usa un alias anónimo. Nadie sabrá quién eres a menos que tú quieras.</p>
+        <p>Usa un alias anónimo. Tu identidad está protegida en todo momento.</p>
       </div>
       <div class="feature-card">
-        <span class="feature-icon">🎯</span>
+        <div class="feature-icon-wrap">🎯</div>
         <h3>Filtra por nivel</h3>
-        <p>ESO, Bachillerato, FP o Universidad. Encuentra ayuda de tu mismo nivel.</p>
+        <p>ESO, Bachillerato, FP o Universidad. Encuentra ayuda exactamente de tu nivel.</p>
       </div>
       <div class="feature-card">
-        <span class="feature-icon">📊</span>
-        <h3>Estadísticas</h3>
-        <p>Consulta el dashboard con las asignaturas y niveles más activos.</p>
+        <div class="feature-icon-wrap">📊</div>
+        <h3>Dashboard</h3>
+        <p>Estadísticas en tiempo real de las asignaturas y niveles más activos.</p>
       </div>
       <div class="feature-card">
-        <span class="feature-icon">⚡</span>
-        <h3>En tiempo real</h3>
-        <p>Las solicitudes y respuestas se publican al instante.</p>
+        <div class="feature-icon-wrap">🛡️</div>
+        <h3>Seguro y privado</h3>
+        <p>Datos protegidos con Row Level Security y autenticación JWT.</p>
       </div>
     </div>
   </div>
 
+  <div class="niveles-seccion">
+    <div class="seccion-badge">Niveles educativos</div>
+    <h2>Para todos los estudiantes</h2>
+    <div class="niveles-grid">
+      <div class="nivel-card eso">📚 ESO</div>
+      <div class="nivel-card bach">🎓 Bachillerato</div>
+      <div class="nivel-card gm">🔧 Grado Medio</div>
+      <div class="nivel-card gs">⚙️ Grado Superior</div>
+      <div class="nivel-card uni">🏛️ Universidad</div>
+    </div>
+  </div>
+
   <div class="cta">
-    <h2>¿Listo para empezar?</h2>
-    <p>Únete a EstuRed y mejora tu rendimiento académico hoy mismo.</p>
-    <button class="btn-primary" (click)="router.navigate(['/registro'])">
-      Registrarse gratis
-    </button>
+    <div class="cta-card">
+      <h2>¿Listo para mejorar tu rendimiento académico?</h2>
+      <p>Únete a EstuRed y empieza a aprender con otros estudiantes hoy mismo.</p>
+      <button class="btn-primary-lg" (click)="router.navigate(['/registro'])">
+        Crear cuenta gratis →
+      </button>
+      <p class="cta-sub">Sin tarjeta de crédito · 100% gratuito · Anónimo</p>
+    </div>
   </div>
 
   <footer class="footer">
-    <p>EstuRed © 2026 · Plataforma académica colaborativa</p>
+    <div class="footer-content">
+      <div class="footer-brand">🎓 EstuRed</div>
+      <p>Plataforma académica colaborativa · TFG DAM 2026</p>
+      <div class="footer-links">
+        <span (click)="router.navigate(['/login'])">Iniciar sesión</span>
+        <span>·</span>
+        <span (click)="router.navigate(['/registro'])">Registrarse</span>
+      </div>
+    </div>
   </footer>
+
 </div>
