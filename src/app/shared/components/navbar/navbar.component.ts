@@ -15,11 +15,15 @@ export class NavbarComponent implements OnInit {
   constructor(private supabase: SupabaseService, private router: Router) {}
 
   async ngOnInit() {
+    // Carga el usuario y su alias al inicializar la navbar
     this.usuario = await this.supabase.getUser();
     if (this.usuario) {
       const { data: perfil } = await this.supabase.getPerfil(this.usuario.id);
       this.alias = perfil?.alias || '';
     }
+
+    // Se suscribe a los cambios de autenticación para actualizar
+    // el alias en tiempo real cuando el usuario inicia o cierra sesión
     this.supabase.onAuthChange(async (user: any) => {
       this.usuario = user;
       if (user) {
@@ -31,6 +35,7 @@ export class NavbarComponent implements OnInit {
     });
   }
 
+  // Alterna la visibilidad del menú hamburguesa en móvil
   toggleMenu() {
     this.menuAbierto = !this.menuAbierto;
   }
@@ -47,6 +52,7 @@ export class NavbarComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
+  // Navega a la ruta indicada y cierra el menú móvil si estaba abierto
   navegarA(ruta: string) {
     this.menuAbierto = false;
     this.router.navigate([ruta]);
